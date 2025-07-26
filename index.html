@@ -46,7 +46,7 @@
         }
 
         .cabot-logo img {
-            max-width: 450px;
+            max-width: 550px;
             height: auto;
             display: block;
             margin: 0 auto;
@@ -173,8 +173,9 @@
 
         .dashboard-nav {
             background-color: #1d5034;
-            padding: 0;
+            padding: 15px 20px;
             display: flex;
+            align-items: center;
             flex-wrap: wrap;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
@@ -280,11 +281,19 @@
             
             .dashboard-nav {
                 flex-direction: column;
+                padding: 10px 15px;
+            }
+            
+            .dashboard-nav > div {
+                margin-bottom: 15px;
+                margin-right: 0 !important;
             }
             
             .nav-button {
                 border-right: none;
-                border-bottom: 1px solid #1d5034;
+                border-bottom: 1px solid rgba(255,255,255,0.2);
+                width: 100%;
+                text-align: left;
             }
         }
     </style>
@@ -311,12 +320,12 @@
                 
                 <div class="form-group">
                     <label for="username" class="form-label">Username:</label>
-                    <input type="text" id="username" class="form-input" placeholder="Enter your username" required>
+                    <input type="email" id="username" name="username" class="form-input" placeholder="Enter your username" autocomplete="username" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="password" class="form-label">Password:</label>
-                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password" autocomplete="current-password" required>
                 </div>
                 
                 <button type="submit" class="login-button" id="loginButton">Log In</button>
@@ -328,14 +337,10 @@
 
     <!-- Dashboard Page -->
     <div id="dashboardPage" class="dashboard-container">
-        <div class="dashboard-header">
-            <div style="display: flex; align-items: center;">
-                <img src="cabot_logo.webp" alt="The Cabot Group Logo" style="height: 80px; margin-right: 20px;" />
-            </div>
-            <div class="user-greeting" id="userGreeting" style="display: none;">Hello, User</div>
-        </div>
-        
         <div class="dashboard-nav">
+            <div style="display: flex; align-items: center; margin-right: auto;">
+                <img src="cabot_logo.webp" alt="The Cabot Group Logo" style="height: 60px; margin-right: 30px;" />
+            </div>
             <button class="nav-button" onclick="showFeature('workorders')">Work Orders</button>
             <button class="nav-button" onclick="showFeature('lease')">Lease Agreement</button>
             <button class="nav-button" onclick="showFeature('maintenance')">Maintenance Matrix</button>
@@ -382,8 +387,12 @@
                     localStorage.setItem('user', JSON.stringify(mockUser));
                     
                     currentUser = mockUser;
-                    showDashboard();
-                    showSuccessMessage('Login successful!');
+                    
+                    // Allow browser to process the successful login for password saving
+                    setTimeout(() => {
+                        showDashboard();
+                        showSuccessMessage('Login successful!');
+                    }, 100);
                 } else {
                     showErrorMessage('Invalid username or password');
                 }
@@ -641,4 +650,3 @@
     </script>
 </body>
 </html>
-
