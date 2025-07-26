@@ -46,7 +46,7 @@
         }
 
         .cabot-logo img {
-            max-width: 350px;
+            max-width: 450px;
             height: auto;
             display: block;
             margin: 0 auto;
@@ -172,25 +172,32 @@
         }
 
         .dashboard-nav {
-            background-color: #2a6b4a;
+            background-color: #1d5034;
             padding: 0;
             display: flex;
             flex-wrap: wrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .nav-button {
             background-color: transparent;
             color: white;
             border: none;
-            padding: 15px 25px;
+            padding: 12px 30px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
+            font-weight: 500;
             transition: background-color 0.3s;
-            border-right: 1px solid #1d5034;
+            border-right: 1px solid rgba(255,255,255,0.2);
+            white-space: nowrap;
         }
 
         .nav-button:hover, .nav-button.active {
-            background-color: #1d5034;
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .nav-button:last-child {
+            border-right: none;
         }
 
         .dashboard-content {
@@ -268,7 +275,7 @@
             }
             
             .cabot-logo img {
-                max-width: 280px;
+                max-width: 320px;
             }
             
             .dashboard-nav {
@@ -634,3 +641,4 @@
     </script>
 </body>
 </html>
+
