@@ -572,6 +572,7 @@
                                 <h3 style="margin-top: 30px;">Account Settings</h3>
                                 <button style="background-color: #1d5034; color: white; padding: 10px 20px; border: none; border-radius: 4px; margin: 10px 10px 10px 0; cursor: pointer;">Update Contact Info</button>
                                 <button style="background-color: #1d5034; color: white; padding: 10px 20px; border: none; border-radius: 4px; margin: 10px 10px 10px 0; cursor: pointer;">Change Password</button>
+                                <button onclick="logout()" style="background-color: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 4px; margin: 10px 10px 10px 0; cursor: pointer;">Log Out</button>
                                 
                                 <h3 style="margin-top: 30px;">Support</h3>
                                 <p><strong>Office Hours:</strong> Monday - Friday, 9:00 AM - 5:00 PM</p>
@@ -608,6 +609,27 @@
             document.getElementById('successMessage').style.display = 'none';
         }
 
+        // Logout function
+        function logout() {
+            // Clear stored user data
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('user');
+            
+            // Reset current user
+            currentUser = null;
+            
+            // Show login page
+            document.getElementById('dashboardPage').style.display = 'none';
+            document.getElementById('loginPage').style.display = 'flex';
+            
+            // Clear form fields
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            
+            // Show success message
+            showSuccessMessage('You have been successfully logged out.');
+        }
+
         // Check for existing session on page load
         window.addEventListener('load', () => {
             const token = localStorage.getItem('accessToken');
@@ -622,4 +644,3 @@
     </script>
 </body>
 </html>
-
