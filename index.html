@@ -322,12 +322,14 @@
     <!-- Dashboard Page -->
     <div id="dashboardPage" class="dashboard-container">
         <div class="dashboard-header">
-            <div class="dashboard-title">The Cabot Group - Property Management</div>
-            <div class="user-greeting" id="userGreeting">Hello, User</div>
+            <div style="display: flex; align-items: center;">
+                <img src="cabot_logo.webp" alt="The Cabot Group Logo" style="height: 80px; margin-right: 20px;" />
+            </div>
+            <div class="user-greeting" id="userGreeting" style="display: none;">Hello, User</div>
         </div>
         
         <div class="dashboard-nav">
-            <button class="nav-button active" onclick="showFeature('workorders')">Work Orders</button>
+            <button class="nav-button" onclick="showFeature('workorders')">Work Orders</button>
             <button class="nav-button" onclick="showFeature('lease')">Lease Agreement</button>
             <button class="nav-button" onclick="showFeature('maintenance')">Maintenance Matrix</button>
             <button class="nav-button" onclick="showFeature('finance')">Finance View</button>
@@ -396,8 +398,21 @@
                 document.getElementById('userGreeting').textContent = `Hello, ${currentUser.firstName}`;
             }
             
-            // Load default content
-            showFeature('workorders');
+            // Load default content - show welcome landing page
+            showWelcomePage();
+        }
+
+        // Welcome landing page
+        function showWelcomePage() {
+            // Clear active buttons
+            document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+            
+            const content = document.getElementById('dashboardContent');
+            content.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: center; height: 60vh; text-align: center;">
+                    <h1 style="font-size: 48px; color: #333; font-weight: 300; font-family: 'Georgia', 'Times New Roman', serif;">Hello, ${currentUser ? currentUser.firstName : '{Tenant First Name}'}</h1>
+                </div>
+            `;
         }
 
         // Feature navigation
