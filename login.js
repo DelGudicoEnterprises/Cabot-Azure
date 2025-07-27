@@ -1,91 +1,78 @@
-const jwt = require('jsonwebtoken');
-
-// JWT Secret
-const JWT_SECRET = process.env.JWT_SECRET || 'cabot-property-management-secret-key-2024';
-
-// Azure Functions export for Azure Static Web Apps
+// Simple Login Endpoint for Cabot Property Management System
 module.exports = async function (context, req) {
-    context.log('Auth login endpoint called');
+    context.log('Login endpoint called');
     
-    // Set CORS headers
-    context.res = {
-        headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type'
-        }
+    // Handle CORS
+    const corsHeaders = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Content-Type': 'application/json'
     };
     
-    // Handle OPTIONS request for CORS
+    // Handle CORS preflight
     if (req.method === 'OPTIONS') {
-        context.res.status = 200;
-        return;
-    }
-    
-    if (req.method !== 'POST') {
         context.res = {
-            status: 405,
-            body: { success: false, message: 'Method not allowed' }
+            status: 200,
+            headers: corsHeaders
         };
         return;
     }
     
     try {
-        const { email, password } = req.body;
+        const { username, password } = req.body || {};
         
-        if (!email || !password) {
+        context.log('Login attempt:', { username, hasPassword: !!password });
+        
+        if (!username || !password) {
             context.res = {
                 status: 400,
+                headers: corsHeaders,
                 body: {
                     success: false,
-                    message: 'Email and password are required'
+                    message: 'Username and password are required'
                 }
             };
             return;
         }
         
-        // Mock authentication for development
-        if (email === 'tenantbase@example.com' && password === 'password') {
-            const mockUser = {
-                id: 1,
-                email: 'tenantbase@example.com',
-                firstName: 'Tenant',
-                lastName: 'Base',
-                role: 'tenant',
-                propertyId: 1
-            };
-            
-            const token = jwt.sign(
-                { userId: mockUser.id, email: mockUser.email, role: mockUser.role },
-                JWT_SECRET,
-                { expiresIn: '24h' }
-            );
-            
+        // Simple authentication - accept tenant1/password123
+        if (username === 'tenant1' && password === 'password123') {
             context.res = {
                 status: 200,
+                headers: corsHeaders,
                 body: {
                     success: true,
                     message: 'Login successful',
-                    token: token,
-                    user: mockUser
+                    token: 'demo-jwt-token-12345',
+                    user: {
+                        id: 1,
+                        username: 'tenant1',
+                        email: 'tenant@cabot.com',
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        role: 'tenant',
+                        organizationName: 'ABC Company',
+                        phoneNumber: '(585) 123-4567'
+                    }
                 }
             };
-            return;
+        } else {
+            context.res = {
+                status: 401,
+                headers: corsHeaders,
+                body: {
+                    success: false,
+                    message: 'Invalid credentials'
+                }
+            };
         }
         
-        // Invalid credentials
-        context.res = {
-            status: 401,
-            body: {
-                success: false,
-                message: 'Invalid credentials'
-            }
-        };
-        
     } catch (error) {
-        context.log('Login error:', error);
+        context.log.error('Login error:', error);
         context.res = {
             status: 500,
+            headers: corsHeaders,
             body: {
                 success: false,
                 message: 'Internal server error'
@@ -93,3 +80,4 @@ module.exports = async function (context, req) {
         };
     }
 };
+
