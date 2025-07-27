@@ -1,8 +1,32 @@
 {
   "routes": [
     {
-      "route": "/api/*",
+      "route": "/api/health",
       "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/api/auth/*",
+      "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/api/workorders",
+      "allowedRoles": ["tenant", "technician", "manager", "admin"]
+    },
+    {
+      "route": "/api/admin/*",
+      "allowedRoles": ["admin"]
+    },
+    {
+      "route": "/api/manager/*",
+      "allowedRoles": ["manager", "admin"]
+    },
+    {
+      "route": "/api/technician/*",
+      "allowedRoles": ["technician", "manager", "admin"]
+    },
+    {
+      "route": "/api/tenant/*",
+      "allowedRoles": ["tenant", "manager", "admin"]
     },
     {
       "route": "/*",
@@ -12,7 +36,7 @@
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/images/*.{png,jpg,gif}", "/css/*"]
+    "exclude": ["/images/*.{png,jpg,gif}", "/css/*", "/api/*"]
   },
   "mimeTypes": {
     ".json": "application/json"
@@ -23,9 +47,15 @@
     "Content-Security-Policy": "default-src 'self' 'unsafe-inline'"
   },
   "auth": {
-    "rolesSource": "/api/GetRoles",
+    "rolesSource": "/api/auth/roles",
     "identityProviders": {
       "customOpenIdConnectProviders": {}
+    }
+  },
+  "responseOverrides": {
+    "401": {
+      "redirect": "/login",
+      "statusCode": 302
     }
   }
 }
