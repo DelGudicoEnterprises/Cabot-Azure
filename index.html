@@ -428,7 +428,7 @@
             const content = document.getElementById('dashboardContent');
             content.innerHTML = `
                 <div style="display: flex; align-items: center; justify-content: center; height: 60vh; text-align: center;">
-                    <h1 style="font-size: 48px; color: #333; font-weight: 300; font-family: 'Georgia', 'Times New Roman', serif;">Hello, ${currentUser ? currentUser.firstName : '{Tenant First Name}'}</h1>
+                    <h1 style="font-size: 48px; color: #333; font-weight: 300; font-family: 'Georgia', 'Times New Roman', serif;">Hello, ${currentUser ? currentUser.firstName : 'Tenant'}</h1>
                 </div>
             `;
         }
