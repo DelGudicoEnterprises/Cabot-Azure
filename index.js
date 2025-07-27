@@ -1,25 +1,22 @@
-// Simple Login Endpoint for Cabot Property Management System
+// Login Endpoint for Cabot Property Management System
 module.exports = async function (context, req) {
     context.log('Login endpoint called');
     
-    // Handle CORS
-    const corsHeaders = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        'Content-Type': 'application/json'
-    };
-    
-    // Handle CORS preflight
-    if (req.method === 'OPTIONS') {
-        context.res = {
-            status: 200,
-            headers: corsHeaders
-        };
-        return;
-    }
-    
     try {
+        // Handle CORS preflight
+        if (req.method === 'OPTIONS') {
+            context.res = {
+                status: 200,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+                    'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+                }
+            };
+            return;
+        }
+        
         const { username, password } = req.body || {};
         
         context.log('Login attempt:', { username, hasPassword: !!password });
@@ -27,7 +24,10 @@ module.exports = async function (context, req) {
         if (!username || !password) {
             context.res = {
                 status: 400,
-                headers: corsHeaders,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
                 body: {
                     success: false,
                     message: 'Username and password are required'
@@ -40,7 +40,10 @@ module.exports = async function (context, req) {
         if (username === 'tenant1' && password === 'password123') {
             context.res = {
                 status: 200,
-                headers: corsHeaders,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
                 body: {
                     success: true,
                     message: 'Login successful',
@@ -60,7 +63,10 @@ module.exports = async function (context, req) {
         } else {
             context.res = {
                 status: 401,
-                headers: corsHeaders,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
                 body: {
                     success: false,
                     message: 'Invalid credentials'
@@ -72,7 +78,10 @@ module.exports = async function (context, req) {
         context.log.error('Login error:', error);
         context.res = {
             status: 500,
-            headers: corsHeaders,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
             body: {
                 success: false,
                 message: 'Internal server error'
@@ -80,3 +89,4 @@ module.exports = async function (context, req) {
         };
     }
 };
+
