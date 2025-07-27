@@ -1,0 +1,16 @@
+{
+  "name": "cabot-property-management",
+  "version": "1.0.0",
+  "description": "Cabot Group Property Management System - Azure Static Web App",
+  "main": "index.js",
+  "scripts": {
+    "start": "func start",
+    "build": "echo 'No build step required'"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2"
+  },
+  "keywords": ["azure-functions", "property-management", "cabot-group", "api"],
+  "author": "The Cabot Group",
+  "license": "ISC"
+}

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cabot Property Management System</title>
+    <link rel="icon" href="/cabot_logo.webp" type="image/webp">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; color: #333; }
+        
+        /* Login Styles */
+        .login-container { display: flex; min-height: 100vh; }
+        .login-left { flex: 1; background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; padding: 40px; }
+        .login-logo-frame { border: 3px solid white; padding: 30px; margin-bottom: 30px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; text-align: center; }
+        .login-logo-text { font-size: 48px; margin: 0; font-weight: bold; line-height: 1.1; }
+        .login-prompt { font-size: 32px; margin: 0; }
+        .login-right { flex: 1; background: #f5f5f5; display: flex; align-items: center; justify-content: center; padding: 40px; }
+        .login-form-container { width: 100%; max-width: 400px; }
+        .login-error { display: none; background: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #f5c6cb; }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: bold; color: #333; font-size: 16px; }
+        .form-input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px; }
+        .login-btn { width: 100%; padding: 15px; background: #2c5530; color: white; border: none; border-radius: 25px; font-size: 18px; font-weight: bold; cursor: pointer; margin-bottom: 20px; }
+        .login-btn:hover { background: #1e3d24; }
+        .login-btn:disabled { background: #ccc; cursor: not-allowed; }
+        .reset-link { text-align: center; color: #666; text-decoration: underline; font-size: 14px; }
+        
+        /* Dashboard Styles */
+        .dashboard-container { display: none; min-height: 100vh; background: #f8f9fa; }
+        .dashboard-nav { background: #2c5530; color: white; padding: 15px 0; }
+        .nav-content { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+        .nav-logo { display: flex; align-items: center; }
+        .nav-logo img { height: 60px; margin-right: 20px; }
+        .nav-logo-text { font-size: 18px; font-weight: bold; }
+        .nav-menu { display: flex; gap: 30px; }
+        .nav-item { color: white; text-decoration: none; padding: 10px 15px; border-radius: 5px; transition: background 0.3s; cursor: pointer; position: relative; }
+        .nav-item:hover { background: rgba(255, 255, 255, 0.1); }
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-content { display: none; position: absolute; background: white; min-width: 200px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); z-index: 1000; border-radius: 5px; top: 100%; left: 0; }
+        .dropdown-content a { color: #333; padding: 12px 16px; text-decoration: none; display: block; border-bottom: 1px solid #eee; cursor: pointer; }
+        .dropdown-content a:hover { background: #f1f1f1; }
+        .dropdown-content a:last-child { border-bottom: none; }
+        .dashboard-main { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .welcome-message { text-align: center; font-size: 48px; color: #333; margin-bottom: 20px; }
+        .content-card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .content-title { color: #2c5530; font-size: 24px; margin-bottom: 20px; font-weight: bold; }
+        .btn-primary { background: #2c5530; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .btn-primary:hover { background: #1e3d24; }
+        .btn-danger { background: #dc3545; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .btn-danger:hover { background: #c82333; }
+        .form-row { margin-bottom: 15px; }
+        .form-row label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-row input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background: #f9f9f9; }
+        .info-text { margin: 20px 0; font-style: italic; color: #666; }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-left">
+            <div class="login-logo-frame">
+                <h1 class="login-logo-text">THE<br>CABOT<br>GROUP</h1>
+            </div>
+            <h2 class="login-prompt">Please Log In</h2>
+        </div>
+        <div class="login-right">
+            <div class="login-form-container">
+                <div id="loginError" class="login-error"></div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label">Username:</label>
+                        <input type="text" id="username" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password:</label>
+                        <input type="password" id="password" class="form-input" required>
+                    </div>
+                    <button type="submit" id="loginBtn" class="login-btn">Log In</button>
+                </form>
+                <div style="text-align: center;">
+                    <a href="#" class="reset-link">Click Here to Reset User Name or Password</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboardPage" class="dashboard-container">
+        <div class="dashboard-nav">
+            <div class="nav-content">
+                <div class="nav-logo">
+                    <img src="/cabot_logo.webp" alt="The Cabot Group">
+                    <span class="nav-logo-text">THE CABOT GROUP</span>
+                </div>
+                <div class="nav-menu">
+                    <div class="dropdown">
+                        <span class="nav-item" onclick="toggleDropdown()">Work Orders</span>
+                        <div id="workOrdersDropdown" class="dropdown-content">
+                            <a onclick="showFeature('previous-orders')">Previous Work Orders</a>
+                            <a onclick="showFeature('current-orders')">Current Work Orders</a>
+                            <a onclick="showFeature('submit-order')">Submit Work Order</a>
+                        </div>
+                    </div>
+                    <span class="nav-item" onclick="showFeature('lease')">Lease Agreement</span>
+                    <span class="nav-item" onclick="showFeature('maintenance')">Maintenance Matrix</span>
+                    <span class="nav-item" onclick="showFeature('finance')">Finance View</span>
+                    <span class="nav-item" onclick="showFeature('account')">Account Information</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-main" id="dashboardContent">
+            <h1 class="welcome-message" id="welcomeMessage">Hello, Tenant</h1>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('cabot_auth_token');
+            if (token) {
+                const user = JSON.parse(localStorage.getItem('cabot_user') || '{}');
+                currentUser = user;
+                showDashboard();
+            } else {
+                showLogin();
+            }
+        });
+
+        function showLogin() {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('dashboardPage').style.display = 'none';
+        }
+
+        function showDashboard() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('dashboardPage').style.display = 'block';
+            if (currentUser && currentUser.firstName) {
+                document.getElementById('welcomeMessage').textContent = `Hello, ${currentUser.firstName}`;
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const errorDiv = document.getElementById('loginError');
+            
+            loginBtn.textContent = 'Logging in...';
+            loginBtn.disabled = true;
+            errorDiv.style.display = 'none';
+            
+            try {
+                let loginSuccess = false;
+                
+                try {
+                    const response = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        localStorage.setItem('cabot_auth_token', data.token);
+                        localStorage.setItem('cabot_user', JSON.stringify(data.user));
+                        currentUser = data.user;
+                        loginSuccess = true;
+                    }
+                } catch (apiError) {
+                    console.log('API login failed, trying mock authentication');
+                }
+                
+                if (!loginSuccess && (username === 'tenant1' || username === 'tenant@cabot.com') && password === 'password123') {
+                    const mockUser = {
+                        id: 1, username: 'tenant1', email: 'tenant@cabot.com',
+                        firstName: 'John', lastName: 'Doe', role: 'tenant',
+                        organizationName: 'ABC Company', phoneNumber: '(585) 123-4567'
+                    };
+                    localStorage.setItem('cabot_auth_token', 'mock-token-' + Date.now());
+                    localStorage.setItem('cabot_user', JSON.stringify(mockUser));
+                    currentUser = mockUser;
+                    loginSuccess = true;
+                }
+                
+                if (loginSuccess) {
+                    showDashboard();
+                } else {
+                    errorDiv.textContent = 'Invalid credentials. Try: tenant1 / password123';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Login failed. Please try again.';
+                errorDiv.style.display = 'block';
+            } finally {
+                loginBtn.textContent = 'Log In';
+                loginBtn.disabled = false;
+            }
+        });
+
+        function toggleDropdown() {
+            const dropdown = document.getElementById('workOrdersDropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.dropdown')) {
+                document.getElementById('workOrdersDropdown').style.display = 'none';
+            }
+        });
+
+        function showFeature(feature) {
+            const content = document.getElementById('dashboardContent');
+            const user = currentUser || {};
+            
+            switch (feature) {
+                case 'previous-orders':
+                    content.innerHTML = `<div class="content-card"><h2 class="content-title">Previous Work Orders</h2><p>Your completed work orders will be displayed here in a table format.</p></div>`;
+                    break;
+                case 'current-orders':
+                    content.innerHTML = `<div class="content-card"><h2 class="content-title">Current Work Orders</h2><p>Your active work orders will be displayed here with status tracking.</p></div>`;
+                    break;
+                case 'submit-order':
+                    content.innerHTML = `<div class="content-card"><h2 class="content-title">Submit New Work Order</h2><p>Work order submission form will be displayed here with all required fields.</p></div>`;
+                    break;
+                case 'lease':
+                    content.innerHTML = `<div class="content-card"><h2 class="content-title">Lease Agreement</h2><p>Your lease agreement PDF will be displayed here.</p><button class="btn-primary">Add New Lease Agreement</button></div>`;
+                    break;
+                case 'maintenance':
+                    content.innerHTML = `<div class="content-card"><h2 class="content-title">Maintenance Matrix</h2><p>For this tool to work, please upload lease agreement</p></div>`;
+                    break;
+                case 'finance':
+                    content.innerHTML = `<div class="content-card"><h2 class="content-title">Finance View</h2><h3>Weekly Cost Report</h3><p>Select date range to view cost analysis and daily cost trends.</p></div>`;
+                    break;
+                case 'account':
+                    content.innerHTML = `
+                        <div class="content-card">
+                            <h2 class="content-title">Account Information</h2>
+                            <div class="form-row"><label>First Name:</label><input type="text" value="${user.firstName || ''}" readonly></div>
+                            <div class="form-row"><label>Last Name:</label><input type="text" value="${user.lastName || ''}" readonly></div>
+                            <div class="form-row"><label>Organization Name:</label><input type="text" value="${user.organizationName || ''}" readonly></div>
+                            <div class="form-row"><label>Email:</label><input type="text" value="${user.email || ''}" readonly></div>
+                            <div class="form-row"><label>Phone Number:</label><input type="text" value="${user.phoneNumber || ''}" readonly></div>
+                            <p class="info-text">To change account information please call, (585)381-1500</p>
+                            <button class="btn-danger" onclick="logout()">Log Out</button>
+                        </div>
+                    `;
+                    break;
+                default:
+                    content.innerHTML = `<h1 class="welcome-message">Hello, ${user.firstName || 'Tenant'}</h1>`;
+            }
+            document.getElementById('workOrdersDropdown').style.display = 'none';
+        }
+
+        function logout() {
+            localStorage.removeItem('cabot_auth_token');
+            localStorage.removeItem('cabot_user');
+            currentUser = null;
+            showLogin();
+        }
+    </script>
+</body>
+</html>

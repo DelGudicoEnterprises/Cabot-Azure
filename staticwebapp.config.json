@@ -1,0 +1,44 @@
+{
+  "routes": [
+    {
+      "route": "/api/health",
+      "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/api/auth/*",
+      "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/api/workorders",
+      "allowedRoles": ["tenant", "technician", "manager", "admin"]
+    },
+    {
+      "route": "/api/*",
+      "allowedRoles": ["authenticated"]
+    },
+    {
+      "route": "/*",
+      "serve": "/index.html",
+      "statusCode": 200
+    }
+  ],
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/api/*", "/*.{css,scss,js,png,gif,ico,jpg,svg,webp}"]
+  },
+  "responseOverrides": {
+    "401": {
+      "redirect": "/login",
+      "statusCode": 302
+    }
+  },
+  "globalHeaders": {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization"
+  },
+  "mimeTypes": {
+    ".webp": "image/webp",
+    ".pdf": "application/pdf"
+  }
+}
