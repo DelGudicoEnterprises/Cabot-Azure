@@ -6,14 +6,7 @@
   "scripts": {
     "start": "func start"
   },
-  "dependencies": {
-    "mssql": "^10.0.1",
-    "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^9.0.2"
-  },
-  "devDependencies": {
-    "@azure/functions": "^4.0.0"
-  },
+  "dependencies": {},
   "engines": {
     "node": ">=18.0.0"
   }
