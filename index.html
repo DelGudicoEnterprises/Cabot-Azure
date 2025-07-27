@@ -338,14 +338,16 @@
     <!-- Dashboard Page -->
     <div id="dashboardPage" class="dashboard-container">
         <div class="dashboard-nav">
-            <div style="display: flex; align-items: center; margin-right: auto;">
+            <div style="display: flex; align-items: center;">
                 <img src="cabot_logo.webp" alt="The Cabot Group Logo" style="height: 60px; margin-right: 30px;" />
             </div>
-            <button class="nav-button" onclick="showFeature('workorders')">Work Orders</button>
-            <button class="nav-button" onclick="showFeature('lease')">Lease Agreement</button>
-            <button class="nav-button" onclick="showFeature('maintenance')">Maintenance Matrix</button>
-            <button class="nav-button" onclick="showFeature('finance')">Finance View</button>
-            <button class="nav-button" onclick="showFeature('account')">Account Information</button>
+            <div style="display: flex; justify-content: center; flex: 1;">
+                <button class="nav-button" onclick="showFeature('workorders')">Work Orders</button>
+                <button class="nav-button" onclick="showFeature('lease')">Lease Agreement</button>
+                <button class="nav-button" onclick="showFeature('maintenance')">Maintenance Matrix</button>
+                <button class="nav-button" onclick="showFeature('finance')">Finance View</button>
+                <button class="nav-button" onclick="showFeature('account')">Account Information</button>
+            </div>
         </div>
         
         <div class="dashboard-content" id="dashboardContent">
