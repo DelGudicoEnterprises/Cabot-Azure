@@ -372,8 +372,9 @@
         let currentUser = null;
 
         // Login form handler
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // Azure Static Web Apps API authentication
+        async function handleLogin(event) {
+            event.preventDefault();
             
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
@@ -385,22 +386,26 @@
             hideMessages();
             
             try {
-                // Mock authentication for immediate functionality
-                if (username === 'tenantbase@example.com' && password === 'password') {
-                    // Simulate API response
-                    const mockUser = {
-                        id: 1,
-                        email: 'tenantbase@example.com',
-                        firstName: 'Tenant',
-                        lastName: 'Base',
-                        role: 'tenant'
-                    };
+                // Call Azure Static Web Apps API
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: username,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Store JWT token and user data
+                    localStorage.setItem('accessToken', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
                     
-                    // Store mock token
-                    localStorage.setItem('accessToken', 'mock-jwt-token');
-                    localStorage.setItem('user', JSON.stringify(mockUser));
-                    
-                    currentUser = mockUser;
+                    currentUser = data.user;
                     
                     // Allow browser to process the successful login for password saving
                     setTimeout(() => {
@@ -408,16 +413,17 @@
                         showSuccessMessage('Login successful!');
                     }, 100);
                 } else {
-                    showErrorMessage('Invalid username or password');
+                    showErrorMessage(data.message || 'Invalid username or password');
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                showErrorMessage('Login failed. Please try again.');
+                showErrorMessage('Login failed. Please check your connection and try again.');
             } finally {
+                // Reset button state
                 loginButton.disabled = false;
-                loginButton.textContent = 'Log In';
+                loginButton.textContent = 'Sign In';
             }
-        });
+        }
 
         // Show dashboard
         function showDashboard() {
