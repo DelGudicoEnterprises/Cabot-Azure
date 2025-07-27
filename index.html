@@ -688,7 +688,14 @@
                     showDashboard();
                 }
             }
+            
+            // Attach login form event listener
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', handleLogin);
+            }
         });
     </script>
 </body>
 </html>
+
