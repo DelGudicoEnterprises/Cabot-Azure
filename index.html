@@ -424,14 +424,16 @@
         function showWelcomePage() {
             // Clear active buttons
             document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
-            // Debug: Check if currentUser is set
-console.log('Current user:', currentUser);
-console.log('First name:', currentUser ? currentUser.firstName : 'No user');
             
             const content = document.getElementById('dashboardContent');
+            // Debug: Check if currentUser is set
+            console.log('Current user:', currentUser);
+            console.log('First name:', currentUser ? currentUser.firstName : 'No user');
+            
+            const userName = currentUser && currentUser.firstName ? currentUser.firstName : 'Tenant';
             content.innerHTML = `
                 <div style="display: flex; align-items: center; justify-content: center; height: 60vh; text-align: center;">
-                    <h1 style="font-size: 48px; color: #333; font-weight: 300; font-family: 'Georgia', 'Times New Roman', serif;">Hello, ${currentUser && currentUser.firstName ? currentUser.firstName : 'Tenant'}</h1>
+                    <h1 style="font-size: 48px; color: #333; font-weight: 300; font-family: 'Georgia', 'Times New Roman', serif;">Hello, ${userName}</h1>
                 </div>
             `;
         }
@@ -655,3 +657,4 @@ console.log('First name:', currentUser ? currentUser.firstName : 'No user');
     </script>
 </body>
 </html>
+
