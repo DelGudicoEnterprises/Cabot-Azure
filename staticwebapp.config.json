@@ -5,6 +5,10 @@
       "allowedRoles": ["anonymous"]
     },
     {
+      "route": "/api/login",
+      "allowedRoles": ["anonymous"]
+    },
+    {
       "route": "/api/auth/*",
       "allowedRoles": ["anonymous"]
     },
@@ -13,8 +17,20 @@
       "allowedRoles": ["tenant", "technician", "manager", "admin"]
     },
     {
-      "route": "/api/*",
-      "allowedRoles": ["authenticated"]
+      "route": "/api/admin/*",
+      "allowedRoles": ["admin"]
+    },
+    {
+      "route": "/api/manager/*",
+      "allowedRoles": ["manager", "admin"]
+    },
+    {
+      "route": "/api/technician/*",
+      "allowedRoles": ["technician", "manager", "admin"]
+    },
+    {
+      "route": "/api/tenant/*",
+      "allowedRoles": ["tenant", "manager", "admin"]
     },
     {
       "route": "/*",
@@ -24,21 +40,26 @@
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/api/*", "/*.{css,scss,js,png,gif,ico,jpg,svg,webp}"]
+    "exclude": ["/images/*.{png,jpg,gif}", "/css/*", "/api/*"]
+  },
+  "mimeTypes": {
+    ".json": "application/json"
+  },
+  "globalHeaders": {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Content-Security-Policy": "default-src 'self' 'unsafe-inline'"
+  },
+  "auth": {
+    "rolesSource": "/api/auth/roles",
+    "identityProviders": {
+      "customOpenIdConnectProviders": {}
+    }
   },
   "responseOverrides": {
     "401": {
       "redirect": "/login",
       "statusCode": 302
     }
-  },
-  "globalHeaders": {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization"
-  },
-  "mimeTypes": {
-    ".webp": "image/webp",
-    ".pdf": "application/pdf"
   }
 }
