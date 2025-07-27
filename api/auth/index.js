@@ -1,33 +1,100 @@
-const { app } = require('@azure/functions');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const sql = require('mssql');
 
-// Azure SQL Database Configuration
-const sqlConfig = {
-    user: process.env.AZURE_SQL_USER || 'evangelgudico',
-    password: process.env.AZURE_SQL_PASSWORD || 'Ironman45',
-    database: process.env.AZURE_SQL_DATABASE || 'cabot-property-management',
-    server: process.env.AZURE_SQL_SERVER || 'cabot-sql-server.database.windows.net',
-    pool: {
-        max: 10,
-        min: 0,
-        idleTimeoutMillis: 30000
-    },
-    options: {
-        encrypt: true,
-        trustServerCertificate: false
-    }
-};
-
 // JWT Secret
 const JWT_SECRET = process.env.JWT_SECRET || 'cabot-property-management-secret-key-2024';
 
-// Login endpoint
-app.http('login', {
-    methods: ['POST'],
-    authLevel: 'anonymous',
-    route: 'auth/login',
+// Azure Functions export for Azure Static Web Apps
+module.exports = async function (context, req) {
+    context.log('Auth login endpoint called');
+    
+    // Set CORS headers
+    context.res = {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type'
+        }
+    };
+    
+    // Handle OPTIONS request for CORS
+    if (req.method === 'OPTIONS') {
+        context.res.status = 200;
+        return;
+    }
+    
+    if (req.method !== 'POST') {
+        context.res = {
+            status: 405,
+            body: { success: false, message: 'Method not allowed' }
+        };
+        return;
+    }
+    
+    try {
+        const { email, password } = req.body;
+        
+        if (!email || !password) {
+            context.res = {
+                status: 400,
+                body: {
+                    success: false,
+                    message: 'Email and password are required'
+                }
+            };
+            return;
+        }
+        
+        // Mock authentication for development
+        if (email === 'tenantbase@example.com' && password === 'password') {
+            const mockUser = {
+                id: 1,
+                email: 'tenantbase@example.com',
+                firstName: 'Tenant',
+                lastName: 'Base',
+                role: 'tenant',
+                propertyId: 1
+            };
+            
+            const token = jwt.sign(
+                { userId: mockUser.id, email: mockUser.email, role: mockUser.role },
+                JWT_SECRET,
+                { expiresIn: '24h' }
+            );
+            
+            context.res = {
+                status: 200,
+                body: {
+                    success: true,
+                    message: 'Login successful',
+                    token: token,
+                    user: mockUser
+                }
+            };
+            return;
+        }
+        
+        // Invalid credentials
+        context.res = {
+            status: 401,
+            body: {
+                success: false,
+                message: 'Invalid credentials'
+            }
+        };
+        
+    } catch (error) {
+        context.log('Login error:', error);
+        context.res = {
+            status: 500,
+            body: {
+                success: false,
+                message: 'Internal server error'
+            }
+        };
+    }
+};
     handler: async (request, context) => {
         try {
             const body = await request.json();
