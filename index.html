@@ -341,14 +341,22 @@
             <div style="display: flex; align-items: center;">
                 <img src="cabot_logo.webp" alt="The Cabot Group Logo" style="height: 60px; margin-right: 30px;" />
             </div>
-            <div style="display: flex; justify-content: center; flex: 1;">
-                <button class="nav-button" onclick="showFeature('workorders')">Work Orders</button>
+            <div style="display: flex; align-items: center; justify-content: center; flex: 1; gap: 20px;">
+                <div class="nav-dropdown" style="position: relative; display: inline-block;">
+                    <button class="nav-button dropdown-btn" onclick="toggleDropdown('workOrdersDropdown')" style="position: relative;">
+                        Work Orders ▼
+                    </button>
+                    <div id="workOrdersDropdown" class="dropdown-content" style="display: none; position: absolute; background-color: white; min-width: 200px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; border-radius: 4px; border: 1px solid #ddd; top: 100%; left: 0;">
+                        <a onclick="showFeature('previous-orders')" style="color: #333; padding: 12px 16px; text-decoration: none; display: block; cursor: pointer; border-bottom: 1px solid #eee;">Previous Work Orders</a>
+                        <a onclick="showFeature('current-orders')" style="color: #333; padding: 12px 16px; text-decoration: none; display: block; cursor: pointer; border-bottom: 1px solid #eee;">Current Work Orders</a>
+                        <a onclick="showFeature('submit-order')" style="color: #333; padding: 12px 16px; text-decoration: none; display: block; cursor: pointer;">Submit Work Order</a>
+                    </div>
+                </div>
                 <button class="nav-button" onclick="showFeature('lease')">Lease Agreement</button>
                 <button class="nav-button" onclick="showFeature('maintenance')">Maintenance Matrix</button>
                 <button class="nav-button" onclick="showFeature('finance')">Finance View</button>
                 <button class="nav-button" onclick="showFeature('account')">Account Information</button>
             </div>
-        </div>
         
         <div class="dashboard-content" id="dashboardContent">
             <!-- Content will be loaded here -->
@@ -426,17 +434,38 @@
             document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
             
             const content = document.getElementById('dashboardContent');
-            // Debug: Check if currentUser is set
-            console.log('Current user:', currentUser);
-            console.log('First name:', currentUser ? currentUser.firstName : 'No user');
             
-            const userName = currentUser && currentUser.firstName ? currentUser.firstName : 'Tenant';
+            // Get the user's first name directly
+            let displayName = 'Tenant';
+            if (currentUser && currentUser.firstName) {
+                displayName = currentUser.firstName;
+            }
+            
             content.innerHTML = `
                 <div style="display: flex; align-items: center; justify-content: center; height: 60vh; text-align: center;">
-                    <h1 style="font-size: 48px; color: #333; font-weight: 300; font-family: 'Georgia', 'Times New Roman', serif;">Hello, ${userName}</h1>
+                    <h1 style="font-size: 48px; color: #333; font-weight: 300; font-family: 'Georgia', 'Times New Roman', serif;">Hello, ` + displayName + `</h1>
                 </div>
             `;
         }
+
+        // Toggle dropdown visibility
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            const isVisible = dropdown.style.display === 'block';
+            
+            // Hide all dropdowns first
+            document.querySelectorAll('.dropdown-content').forEach(d => d.style.display = 'none');
+            
+            // Toggle the clicked dropdown
+            dropdown.style.display = isVisible ? 'none' : 'block';
+        }
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.matches('.dropdown-btn')) {
+                document.querySelectorAll('.dropdown-content').forEach(d => d.style.display = 'none');
+            }
+        });
 
         // Feature navigation
         function showFeature(feature) {
@@ -657,4 +686,5 @@
     </script>
 </body>
 </html>
+
 
