@@ -344,7 +344,7 @@
             <div style="display: flex; align-items: center; justify-content: center; flex: 1; gap: 20px;">
                 <div class="nav-dropdown" style="position: relative; display: inline-block;">
                     <button class="nav-button dropdown-btn" onclick="toggleDropdown('workOrdersDropdown')" style="position: relative;">
-                        Work Orders ▼
+                        Work Orders
                     </button>
                     <div id="workOrdersDropdown" class="dropdown-content" style="display: none; position: absolute; background-color: white; min-width: 200px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; border-radius: 4px; border: 1px solid #ddd; top: 100%; left: 0;">
                         <a onclick="showFeature('previous-orders')" style="color: #333; padding: 12px 16px; text-decoration: none; display: block; cursor: pointer; border-bottom: 1px solid #eee;">Previous Work Orders</a>
@@ -357,6 +357,10 @@
                 <button class="nav-button" onclick="showFeature('finance')">Finance View</button>
                 <button class="nav-button" onclick="showFeature('account')">Account Information</button>
             </div>
+            <div style="display: flex; align-items: center; color: white; font-weight: 500;">
+                <span id="userGreeting">Hello, Tenant</span>
+            </div>
+        </div>
         
         <div class="dashboard-content" id="dashboardContent">
             <!-- Content will be loaded here -->
@@ -686,5 +690,3 @@
     </script>
 </body>
 </html>
-
-
