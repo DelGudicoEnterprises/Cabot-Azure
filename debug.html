@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Debug - Cabot Property Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #1d5034;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .test-button:hover {
+            background: #0f2a1a;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .success {
+            border-left: 4px solid #28a745;
+        }
+        .error {
+            border-left: 4px solid #dc3545;
+        }
+        .info {
+            border-left: 4px solid #17a2b8;
+        }
+        h1 {
+            color: #1d5034;
+        }
+        .endpoint-list {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .endpoint-item {
+            margin: 5px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 API Endpoint Debugger</h1>
+    
+    <div class="test-section">
+        <h2>Current Environment</h2>
+        <div id="environment" class="result info"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test API Endpoints</h2>
+        <p>Click each button to test different endpoint configurations:</p>
+        
+        <button class="test-button" onclick="testEndpoint('/api/login', 'GET')">Test GET /api/login</button>
+        <button class="test-button" onclick="testEndpoint('/api/login', 'POST')">Test POST /api/login</button>
+        <button class="test-button" onclick="testEndpoint('/api/auth/login', 'POST')">Test POST /api/auth/login</button>
+        <button class="test-button" onclick="testEndpoint('/api/health', 'GET')">Test GET /api/health</button>
+        <button class="test-button" onclick="testEndpoint('/.auth/me', 'GET')">Test Azure Auth Status</button>
+        
+        <div id="endpointResults"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Expected API Structure</h2>
+        <div class="endpoint-list">
+            <div class="endpoint-item">📁 /api/</div>
+            <div class="endpoint-item">├── 📁 login/</div>
+            <div class="endpoint-item">│   ├── 📄 index.js</div>
+            <div class="endpoint-item">│   └── 📄 function.json</div>
+            <div class="endpoint-item">└── 📁 health/</div>
+            <div class="endpoint-item">    ├── 📄 index.js</div>
+            <div class="endpoint-item">    └── 📄 function.json</div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Full Login Test</h2>
+        <button class="test-button" onclick="testFullLogin()">Test Complete Login Flow</button>
+        <div id="loginResults"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Azure Static Web Apps Info</h2>
+        <div id="azureInfo" class="result info"></div>
+    </div>
+
+    <script>
+        // Show environment info
+        function showEnvironment() {
+            const envInfo = {
+                'Current URL': window.location.href,
+                'Origin': window.location.origin,
+                'Hostname': window.location.hostname,
+                'Protocol': window.location.protocol,
+                'Is Azure': window.location.hostname.includes('azurestaticapps.net'),
+                'User Agent': navigator.userAgent
+            };
+            
+            document.getElementById('environment').innerHTML = Object.entries(envInfo)
+                .map(([key, value]) => `${key}: ${value}`)
+                .join('\n');
+        }
+
+        // Test individual endpoints
+        async function testEndpoint(endpoint, method = 'GET') {
+            const resultDiv = document.getElementById('endpointResults');
+            const testId = `test-${Date.now()}`;
+            
+            resultDiv.innerHTML += `<div id="${testId}" class="result info">Testing ${method} ${endpoint}...</div>`;
+            
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                };
+                
+                if (method === 'POST') {
+                    options.body = JSON.stringify({
+                        username: 'test',
+                        password: 'test'
+                    });
+                }
+                
+                const response = await fetch(endpoint, options);
+                const responseText = await response.text();
+                
+                let responseData;
+                try {
+                    responseData = JSON.parse(responseText);
+                } catch (e) {
+                    responseData = responseText;
+                }
+                
+                const resultInfo = {
+                    'Endpoint': endpoint,
+                    'Method': method,
+                    'Status': response.status,
+                    'Status Text': response.statusText,
+                    'Headers': Object.fromEntries(response.headers.entries()),
+                    'Response': responseData
+                };
+                
+                document.getElementById(testId).className = response.ok ? 'result success' : 'result error';
+                document.getElementById(testId).innerHTML = `${method} ${endpoint}\nStatus: ${response.status} ${response.statusText}\n\nResponse:\n${JSON.stringify(responseData, null, 2)}`;
+                
+            } catch (error) {
+                document.getElementById(testId).className = 'result error';
+                document.getElementById(testId).innerHTML = `${method} ${endpoint}\nError: ${error.message}\n\nThis usually means:\n- The endpoint doesn't exist (404)\n- CORS is blocking the request\n- Network error`;
+            }
+        }
+
+        // Test full login flow
+        async function testFullLogin() {
+            const resultDiv = document.getElementById('loginResults');
+            resultDiv.innerHTML = '<div class="result info">Starting full login test...</div>';
+            
+            try {
+                // Test with correct credentials
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: 'tenant1',
+                        password: 'password123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <div class="result ${response.ok ? 'success' : 'error'}">
+                        Login Test Results:
+                        Status: ${response.status}
+                        Success: ${data.success}
+                        Message: ${data.message || 'No message'}
+                        ${data.user ? 'User: ' + JSON.stringify(data.user, null, 2) : ''}
+                    </div>
+                `;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result error">Login Test Failed:\n${error.message}</div>`;
+            }
+        }
+
+        // Check Azure configuration
+        async function checkAzureConfig() {
+            const azureInfo = document.getElementById('azureInfo');
+            
+            const info = [
+                'Azure Static Web Apps Configuration:',
+                '',
+                'If you\'re seeing 404 errors, check:',
+                '1. The api/ folder is in your repository root',
+                '2. Each function folder has both index.js AND function.json',
+                '3. function.json has the correct "route" property',
+                '4. The GitHub Action is deploying successfully',
+                '',
+                'Common issues:',
+                '- Missing function.json file',
+                '- Incorrect route in function.json',
+                '- API folder not at repository root',
+                '- Dependencies not in api/package.json'
+            ];
+            
+            azureInfo.innerHTML = info.join('\n');
+        }
+
+        // Run tests on load
+        window.onload = function() {
+            showEnvironment();
+            checkAzureConfig();
+        };
+    </script>
+</body>
