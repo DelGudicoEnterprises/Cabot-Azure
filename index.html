@@ -388,34 +388,50 @@
             const password = document.getElementById('password').value;
             const loginButton = document.getElementById('loginButton');
             
-            loginButton.disabled = true;
-            loginButton.textContent = 'Logging in...';
-            
             // Hide any previous errors
             document.getElementById('loginError').style.display = 'none';
             
+            if (!username || !password) {
+                document.getElementById('loginError').textContent = 'Please enter both username and password';
+                document.getElementById('loginError').style.display = 'block';
+                return;
+            }
+            
+            loginButton.disabled = true;
+            loginButton.textContent = 'Logging in...';
+            
             try {
+                // Call the API login endpoint
                 const response = await fetch('/api/login', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: username, password: password })
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
                 });
                 
                 const data = await response.json();
                 
-                if (data.success) {
-                    localStorage.setItem('accessToken', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
+                if (response.ok && data.success) {
+                    // Store user data
+                    localStorage.setItem('authToken', `api-auth-token-${data.user.id}`);
+                    localStorage.setItem('userData', JSON.stringify(data.user));
+                    
+                    // Show dashboard
                     showDashboard(data.user);
                 } else {
-                    document.getElementById('loginError').textContent = data.message || 'Invalid credentials';
+                    document.getElementById('loginError').textContent = data.message || 'Login failed';
                     document.getElementById('loginError').style.display = 'block';
+                    loginButton.disabled = false;
+                    loginButton.textContent = 'Log In';
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                document.getElementById('loginError').textContent = 'Login failed. Please try again.';
+                document.getElementById('loginError').textContent = 'Network error. Please try again.';
                 document.getElementById('loginError').style.display = 'block';
-            } finally {
                 loginButton.disabled = false;
                 loginButton.textContent = 'Log In';
             }
@@ -698,4 +714,5 @@
     </script>
 </body>
 </html>
+
 
