@@ -1,5 +1,9 @@
+const sql = require('mssql');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 module.exports = async function (context, req) {
-    context.log('Login endpoint called - Hybrid authentication (DB + fallback)');
+    context.log('Login endpoint called - Azure SQL Database authentication');
     
     // Handle CORS preflight
     if (req.method === 'OPTIONS') {
