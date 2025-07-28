@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cabot Property Management System</title>
+    <link rel="icon" href="/cabot_logo.webp" type="image/webp">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Times New Roman', serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Login Page Styles */
+        .login-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .login-left {
+            flex: 1;
+            background: #1d5034;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 40px;
+        }
+
+        .login-logo {
+            height: 120px;
+            width: auto;
+            margin-bottom: 30px;
+        }
+
+        .login-prompt {
+            font-size: 28px;
+            margin: 0;
+            font-family: 'Times New Roman', serif;
+            font-weight: normal;
+        }
+
+        .login-right {
+            flex: 1;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .login-form-container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-form-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            width: 100%;
+        }
+
+        .login-error {
+            display: none;
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #1d5034;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: #1d5034;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .login-btn:hover {
+            background: #0f2a1a;
+        }
+
+        .login-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .reset-link {
+            text-align: center;
+            color: #666;
+            text-decoration: underline;
+            font-size: 14px;
+            font-family: 'Times New Roman', serif;
+        }
+
+        /* Dashboard Styles */
+        .dashboard-container {
+            display: none;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Navigation Ribbon */
+        .dashboard-nav {
+            background: #1d5034;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 50px;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-logo {
+            height: 35px;
+            width: auto;
+            margin-right: 15px;
+            border: 1px solid white;
+            padding: 3px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-brand {
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            font-family: 'Times New Roman', serif;
+            margin-right: 30px;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-button {
+            background: transparent;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Times New Roman', serif;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-button:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-right {
+            color: white;
+            font-size: 14px;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .dashboard-content {
+            flex: 1;
+            padding: 30px;
+            background-color: #f9f9f9;
+            overflow-y: auto;
+        }
+
+        .content-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .content-title {
+            color: #1d5034;
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .content-text {
+            color: #666;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            color: #555;
+        }
+
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+
+        .error-message {
+            background-color: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message {
+            background-color: #efe;
+            border: 1px solid #cfc;
+            color: #3c3;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+            }
+            
+            .login-left, .login-right {
+                flex: none;
+                height: 50vh;
+            }
+            
+            .cabot-logo img {
+                max-width: 320px;
+            }
+            
+            .dashboard-nav {
+                flex-direction: column;
+                padding: 10px 15px;
+            }
+            
+            .dashboard-nav > div {
+                margin-bottom: 15px;
+                margin-right: 0 !important;
+            }
+            
+            .nav-button {
+                border-right: none;
+                border-bottom: 1px solid rgba(255,255,255,0.2);
+                width: 100%;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <!-- Left Side - Cabot Group Branding -->
+        <div class="login-left">
+            <img src="cabot_logo.webp" alt="The Cabot Group Logo" class="login-logo" />
+            <h1 class="login-prompt">Please Log In</h1>
+        </div>
+
+        <!-- Right Side - Login Form -->
+        <div class="login-right">
+            <div class="login-form-container">
+                <div class="login-form-card">
+                    <div id="loginError" class="login-error"></div>
+                    
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="username" class="form-label">Username:</label>
+                            <input type="text" id="username" name="username" class="form-input" placeholder="Enter your username" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password" class="form-label">Password:</label>
+                            <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password" required>
+                        </div>
+                        
+                        <button type="submit" class="login-btn" id="loginButton">Log In</button>
+                    </form>
+                    
+                    <a href="#" class="reset-link">Click Here to Reset User Name or Password</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboardPage" class="dashboard-container">
+        <div class="dashboard-nav">
+{{ ... }}
+            <div class="nav-left">
+                <img src="cabot_logo.webp" alt="The Cabot Group Logo" class="nav-logo" />
+                <span class="nav-brand">THE CABOT GROUP</span>
+            </div>
+            
+            <div class="nav-menu">
+                <div class="nav-dropdown" style="position: relative; display: inline-block;">
+                    <button class="nav-button dropdown-btn" onclick="toggleDropdown('workOrdersDropdown')">
+                        Work Orders
+                    </button>
+                    <div id="workOrdersDropdown" class="dropdown-content" style="display: none; position: absolute; background-color: white; min-width: 200px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; border-radius: 4px; border: 1px solid #ddd; top: 100%; left: 0;">
+                        <a onclick="showFeature('previous-orders')" style="color: #333; padding: 12px 16px; text-decoration: none; display: block; cursor: pointer; border-bottom: 1px solid #eee;">Previous Work Orders</a>
+                        <a onclick="showFeature('current-orders')" style="color: #333; padding: 12px 16px; text-decoration: none; display: block; cursor: pointer; border-bottom: 1px solid #eee;">Current Work Orders</a>
+                        <a onclick="showFeature('submit-order')" style="color: #333; padding: 12px 16px; text-decoration: none; display: block; cursor: pointer;">Submit Work Order</a>
+                    </div>
+                </div>
+                <button class="nav-button" onclick="showFeature('lease')">Lease Agreement</button>
+                <button class="nav-button" onclick="showFeature('maintenance')">Maintenance Matrix</button>
+                <button class="nav-button" onclick="showFeature('finance')">Finance View</button>
+                <button class="nav-button" onclick="showFeature('account')">Account Information</button>
+            </div>
+            
+            <div class="nav-right">
+                <span id="userGreeting">Hello, Tenant</span>
+            </div>
+        </div>
+        
+        <div class="dashboard-content" id="dashboardContent">
+            <!-- Content will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'MOCK'; // Using mock backend for immediate functionality
+        let currentUser = null;
+
+        // Login form handler
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginButton = document.getElementById('loginButton');
+            
+            // Hide any previous errors
+            document.getElementById('loginError').style.display = 'none';
+            
+            if (!username || !password) {
+                document.getElementById('loginError').textContent = 'Please enter both username and password';
+                document.getElementById('loginError').style.display = 'block';
+                return;
+            }
+            
+            loginButton.disabled = true;
+            loginButton.textContent = 'Logging in...';
+            
+            try {
+                // Call the API login endpoint
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Store user data
+                    localStorage.setItem('authToken', `api-auth-token-${data.user.id}`);
+                    localStorage.setItem('userData', JSON.stringify(data.user));
+                    
+                    // Show dashboard
+                    showDashboard(data.user);
+                } else {
+                    document.getElementById('loginError').textContent = data.message || 'Login failed';
+                    document.getElementById('loginError').style.display = 'block';
+                    loginButton.disabled = false;
+                    loginButton.textContent = 'Log In';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                document.getElementById('loginError').textContent = 'Network error. Please try again.';
+                document.getElementById('loginError').style.display = 'block';
+                loginButton.disabled = false;
+                loginButton.textContent = 'Log In';
+            }
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('dashboardPage').style.display = 'flex';
+            
+            if (currentUser) {
+                document.getElementById('userGreeting').textContent = `Hello, ${currentUser.firstName}`;
+            }
+            
+            // Load default content - show welcome landing page
+            showWelcomePage();
+        }
+
+        // Welcome landing page
+        function showWelcomePage() {
+            // Clear active buttons
+            document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+            
+            const content = document.getElementById('dashboardContent');
+            
+            // Get the user's first name directly
+            let displayName = 'Tenant';
+            if (currentUser && currentUser.firstName) {
+                displayName = currentUser.firstName;
+            }
+            
+            content.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: center; height: 60vh; text-align: center;">
+                    <h1 style="font-size: 48px; color: #333; font-weight: 300; font-family: 'Georgia', 'Times New Roman', serif;">Hello, ` + displayName + `</h1>
+                </div>
+            `;
+        }
+
+        // Toggle dropdown visibility
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            const isVisible = dropdown.style.display === 'block';
+            
+            // Hide all dropdowns first
+            document.querySelectorAll('.dropdown-content').forEach(d => d.style.display = 'none');
+            
+            // Toggle the clicked dropdown
+            dropdown.style.display = isVisible ? 'none' : 'block';
+        }
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.matches('.dropdown-btn')) {
+                document.querySelectorAll('.dropdown-content').forEach(d => d.style.display = 'none');
+            }
+        });
+
+        // Feature navigation
+        function showFeature(feature) {
+            // Update active button
+            document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const content = document.getElementById('dashboardContent');
+            
+            switch(feature) {
+                case 'workorders':
+                    content.innerHTML = `
+                        <div class="content-card">
+                            <h2 class="content-title">Work Orders</h2>
+                            <div class="content-text">
+                                <h3>Current Work Orders</h3>
+                                <ul class="feature-list">
+                                    <li class="feature-item">🔧 Ticket #2024-001 - Kitchen Faucet Repair - Status: In Progress</li>
+                                    <li class="feature-item">🚿 Ticket #2024-002 - Bathroom Shower Issue - Status: Pending</li>
+                                </ul>
+                                
+                                <h3 style="margin-top: 30px;">Submit New Work Order</h3>
+                                <p>Need maintenance? Submit a new work order request and our team will respond promptly.</p>
+                                <button style="background-color: #1d5034; color: white; padding: 10px 20px; border: none; border-radius: 4px; margin-top: 10px; cursor: pointer;">Submit New Request</button>
+                                
+                                <h3 style="margin-top: 30px;">Work Order History</h3>
+                                <ul class="feature-list">
+                                    <li class="feature-item">✅ Ticket #2023-045 - HVAC Maintenance - Completed 12/15/2023</li>
+                                    <li class="feature-item">✅ Ticket #2023-032 - Light Fixture Replacement - Completed 11/28/2023</li>
+                                    <li class="feature-item">✅ Ticket #2023-018 - Carpet Cleaning - Completed 10/12/2023</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'lease':
+                    content.innerHTML = `
+                        <div class="content-card">
+                            <h2 class="content-title">Lease Agreement</h2>
+                            <div class="content-text">
+                                <h3>Current Lease Information</h3>
+                                <ul class="feature-list">
+                                    <li class="feature-item"><strong>Property:</strong> 123 Main Street, Unit 4B</li>
+                                    <li class="feature-item"><strong>Lease Term:</strong> January 1, 2024 - December 31, 2024</li>
+                                    <li class="feature-item"><strong>Monthly Rent:</strong> $1,200.00</li>
+                                    <li class="feature-item"><strong>Security Deposit:</strong> $1,200.00</li>
+                                    <li class="feature-item"><strong>Lease Status:</strong> Active</li>
+                                </ul>
+                                
+                                <h3 style="margin-top: 30px;">Lease Documents</h3>
+                                <p>Access your lease agreement and related documents:</p>
+                                <button style="background-color: #1d5034; color: white; padding: 10px 20px; border: none; border-radius: 4px; margin: 10px 10px 10px 0; cursor: pointer;">View Lease Agreement</button>
+                                <button style="background-color: #1d5034; color: white; padding: 10px 20px; border: none; border-radius: 4px; margin: 10px 10px 10px 0; cursor: pointer;">Download PDF</button>
+                                
+                                <h3 style="margin-top: 30px;">Lease Renewal</h3>
+                                <p>Your lease expires on December 31, 2024. Contact us to discuss renewal options.</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'maintenance':
+                    content.innerHTML = `
+                        <div class="content-card">
+                            <h2 class="content-title">Maintenance Matrix</h2>
+                            <div class="content-text">
+                                <h3>Scheduled Maintenance</h3>
+                                <ul class="feature-list">
+                                    <li class="feature-item">🔥 HVAC Filter Replacement - Next: February 15, 2024</li>
+                                    <li class="feature-item">🚿 Water Heater Inspection - Next: March 1, 2024</li>
+                                    <li class="feature-item">🔌 Electrical Safety Check - Next: June 1, 2024</li>
+                                    <li class="feature-item">🏠 Annual Property Inspection - Next: August 15, 2024</li>
+                                </ul>
+                                
+                                <h3 style="margin-top: 30px;">Maintenance Guidelines</h3>
+                                <p><strong>Emergency Issues (24/7):</strong> Gas leaks, water leaks, electrical hazards, lockouts</p>
+                                <p><strong>Urgent Issues (24-48 hours):</strong> No heat/AC, plumbing problems, security issues</p>
+                                <p><strong>Standard Issues (3-5 days):</strong> Appliance repairs, minor electrical, cosmetic issues</p>
+                                
+                                <h3 style="margin-top: 30px;">Tenant Responsibilities</h3>
+                                <ul class="feature-list">
+                                    <li class="feature-item">Replace light bulbs and batteries in smoke detectors</li>
+                                    <li class="feature-item">Keep drains clear and report clogs promptly</li>
+                                    <li class="feature-item">Maintain reasonable temperature to prevent pipe freezing</li>
+                                    <li class="feature-item">Report maintenance issues promptly</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'finance':
+                    content.innerHTML = `
+                        <div class="content-card">
+                            <h2 class="content-title">Finance View (Limited Access)</h2>
+                            <div class="content-text">
+                                <h3>Payment Information</h3>
+                                <ul class="feature-list">
+                                    <li class="feature-item"><strong>Current Balance:</strong> $0.00</li>
+                                    <li class="feature-item"><strong>Next Payment Due:</strong> February 1, 2024</li>
+                                    <li class="feature-item"><strong>Amount Due:</strong> $1,200.00</li>
+                                    <li class="feature-item"><strong>Payment Method:</strong> Auto-Pay (Bank Transfer)</li>
+                                </ul>
+                                
+                                <h3 style="margin-top: 30px;">Recent Payments</h3>
+                                <ul class="feature-list">
+                                    <li class="feature-item">✅ January 2024 - $1,200.00 - Paid 01/01/2024</li>
+                                    <li class="feature-item">✅ December 2023 - $1,200.00 - Paid 12/01/2023</li>
+                                    <li class="feature-item">✅ November 2023 - $1,200.00 - Paid 11/01/2023</li>
+                                </ul>
+                                
+                                <h3 style="margin-top: 30px;">Payment Options</h3>
+                                <p>Make payments online through our secure portal:</p>
+                                <button style="background-color: #1d5034; color: white; padding: 10px 20px; border: none; border-radius: 4px; margin: 10px 10px 10px 0; cursor: pointer;">Make Payment</button>
+                                <button style="background-color: #1d5034; color: white; padding: 10px 20px; border: none; border-radius: 4px; margin: 10px 10px 10px 0; cursor: pointer;">Update Payment Method</button>
+                                
+                                <p style="margin-top: 20px; color: #666; font-style: italic;">Note: This is a limited finance view for tenant access. For detailed financial information, please contact our office.</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'account':
+                    content.innerHTML = `
+                        <div class="content-card">
+                            <h2 class="content-title">Account Information</h2>
+                            <div class="content-text">
+                                <h3>Personal Information</h3>
+                                <ul class="feature-list">
+                                    <li class="feature-item"><strong>Name:</strong> ${currentUser ? currentUser.firstName + ' ' + currentUser.lastName : 'Tenant Base'}</li>
+                                    <li class="feature-item"><strong>Email:</strong> ${currentUser ? currentUser.email : 'tenantbase@example.com'}</li>
+                                    <li class="feature-item"><strong>Phone:</strong> (555) 123-4567</li>
+                                    <li class="feature-item"><strong>Emergency Contact:</strong> (555) 987-6543</li>
+                                </ul>
+                                
+                                <h3 style="margin-top: 30px;">Property Information</h3>
+                                <ul class="feature-list">
+                                    <li class="feature-item"><strong>Address:</strong> 123 Main Street, Unit 4B</li>
+                                    <li class="feature-item"><strong>City:</strong> Rochester, NY 14623</li>
+                                    <li class="feature-item"><strong>Property Manager:</strong> Sarah Johnson</li>
+                                    <li class="feature-item"><strong>Manager Phone:</strong> (585) 555-0123</li>
+                                    <li class="feature-item"><strong>Manager Email:</strong> sarah.johnson@cabotgroup.com</li>
+                                </ul>
+                                
+                                <h3 style="margin-top: 30px;">Account Settings</h3>
+                                <button style="background-color: #1d5034; color: white; padding: 10px 20px; border: none; border-radius: 4px; margin: 10px 10px 10px 0; cursor: pointer;">Update Contact Info</button>
+                                <button style="background-color: #1d5034; color: white; padding: 10px 20px; border: none; border-radius: 4px; margin: 10px 10px 10px 0; cursor: pointer;">Change Password</button>
+                                <button onclick="logout()" style="background-color: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 4px; margin: 10px 10px 10px 0; cursor: pointer;">Log Out</button>
+                                
+                                <h3 style="margin-top: 30px;">Support</h3>
+                                <p><strong>Office Hours:</strong> Monday - Friday, 9:00 AM - 5:00 PM</p>
+                                <p><strong>Emergency Line:</strong> (585) 555-HELP (4357)</p>
+                                <p><strong>Email Support:</strong> support@cabotgroup.com</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+        }
+
+        // Utility functions
+        function showErrorMessage(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccessMessage(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        // Logout function
+        function logout() {
+            // Clear stored user data
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('user');
+            
+            // Reset current user
+            currentUser = null;
+            
+            // Show login page
+            document.getElementById('dashboardPage').style.display = 'none';
+            document.getElementById('loginPage').style.display = 'flex';
+            
+            // Clear form fields
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            
+            // Show success message
+            showSuccessMessage('You have been successfully logged out.');
+        }
+
+        // Check for existing session on page load
+        window.addEventListener('load', () => {
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                const userData = localStorage.getItem('user');
+                if (userData) {
+                    currentUser = JSON.parse(userData);
+                    showDashboard();
+                }
+            }
+            
+            // Attach login form event listener
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', handleLogin);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "cabot-property-management",
+  "version": "1.0.0",
+  "description": "Cabot Property Management System - Static Web App",
+  "scripts": {
+    "build": "echo 'Static HTML - no build required'",
+    "start": "echo 'Static HTML site'"
+  },
+  "author": "The Cabot Group",
+  "license": "ISC"
+}
